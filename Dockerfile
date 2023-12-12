@@ -1,3 +1,4 @@
+# IMG FOR TESTING
 FROM postgres:latest
 
 ENV POSTGRES_USER=kasimov

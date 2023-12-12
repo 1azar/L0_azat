@@ -1,0 +1,7 @@
+env: "local"
+dbCredentials:
+  usernameEnv: DB_USERNAME
+  passwordEnv: DB_PWD
+  addressEnv: DB_ADDR
+  portEnv: DB_PORT
+  dbNameEnv: DB_NAME

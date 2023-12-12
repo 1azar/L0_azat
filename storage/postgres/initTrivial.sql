@@ -44,7 +44,7 @@ INSERT INTO orders (
              'ru', '', 'test', 'myTest', '9', 99, '2021-11-26T06:22:19Z', '1'
          );
 
--- Пример вставки данных для товара в заказе
+-- Вставка данных для товара в заказе
 INSERT INTO order_items (
     order_uid, chrt_id, price, rid, name, sale, size, total_price, nm_id, brand, status
 ) VALUES (
