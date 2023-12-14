@@ -6,11 +6,11 @@ import (
 	"L0_azat/internal/lib/logger/sl"
 	"L0_azat/internal/service"
 	"L0_azat/internal/storage/postgres"
-	"L0_azat/tests"
 	"context"
 	"fmt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
 	"log/slog"
 	"net/http"
 	"os"
@@ -54,6 +54,14 @@ func main() {
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.URLFormat)
+	// just to be able testing in local machine fixme: remove this later
+	router.Use(cors.Handler(cors.Options{
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: true,
+		MaxAge:           300,
+	}))
 
 	router.Get("/{order_uid}", order.New(logger, storage))
 
@@ -67,15 +75,15 @@ func main() {
 
 	go func() {
 		if err := httpServ.ListenAndServe(); err != nil {
-			logger.Error("failed to start http server")
+			logger.Error("http serving stopped:", sl.Err(err))
 		}
 	}()
 
 	logger.Debug(fmt.Sprintf("listening http:%s to provide order info", cfg.HttpCfg.Address))
 	logger.Info("service started")
 
-	// client which spams msg. todo: delete this.
-	go tests.StartMsgSpam(cfg, 20*time.Second)
+	// client which spams msg.
+	//go tests.StartMsgSpam(cfg, 20*time.Second)
 
 	// healthy shutdown
 	done := make(chan os.Signal, 1)
@@ -89,7 +97,7 @@ func main() {
 
 	// stop http serving
 	if err := httpServ.Shutdown(ctx); err != nil {
-		logger.Error("failed to stop http service", sl.Err(err))
+		logger.Error(err.Error())
 	}
 
 	// stop nats-streaming serving

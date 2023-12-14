@@ -46,7 +46,7 @@ func (s *Storage) Close() {
 func (s *Storage) GetOrder(orderUid string) (*domain.Message, error) {
 	const fn = "storage.postgres.GetOrder"
 
-	// todo: try use sql injection when this case:
+	// todo: try to use sql injection when this case:
 	//q := fmt.Sprintf("SELECT * FROM %s WHERE order_uid = %s LIMIT 1", storage.ORDERS_TABLE, orderUid)
 
 	// get order without items
@@ -81,14 +81,16 @@ func (s *Storage) GetOrder(orderUid string) (*domain.Message, error) {
 	q = fmt.Sprintf("SELECT * FROM %s WHERE order_uid = $1", storage.ORDER_ITEMS_TABLE)
 	rows, err := s.conn.Query(context.Background(), q, orderUid)
 	if err != nil {
-		return &domain.Message{}, fmt.Errorf("failed to get order items. %s: %w", fn, err)
+		return &domain.Message{}, fmt.Errorf("failed to get rows of order items. %s: %w", fn, err)
 	}
 	defer rows.Close()
 
 	var items []domain.Item = make([]domain.Item, 0, 10)
 	for rows.Next() {
 		var item domain.Item
+		var tmp string // just to not specify all columns in q except first
 		if err := rows.Scan(
+			&tmp,
 			&item.ChrtId,
 			&item.TrackNumber,
 			&item.Price,
@@ -101,7 +103,7 @@ func (s *Storage) GetOrder(orderUid string) (*domain.Message, error) {
 			&item.Brand,
 			&item.Status,
 		); err != nil {
-			return &domain.Message{}, fmt.Errorf("failed to get order items. %s: %w", fn, err)
+			return &domain.Message{}, fmt.Errorf("failed to get item row. %s: %w", fn, err)
 		}
 		items = append(items, item)
 	}

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP Request Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 50px;
+        }
+        #requestContainer {
+            display: flex;
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 20px;
+        }
+        #inputUrl {
+            flex: 70%;
+            padding: 10px;
+        }
+        #btnMakeRequest {
+            flex: 30%;
+            padding: 10px;
+            cursor: pointer;
+        }
+        #responseContainer {
+            width: 100%;
+            max-width: 600px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            overflow-wrap: break-word;
+            background-color: #f9f9f9;
+        }
+        code {
+            display: block;
+            white-space: pre-wrap;
+            font-family: Menlo, monospace;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<h1>HTTP Request Example</h1>
+
+<div id="requestContainer">
+    <input type="text" id="inputUrl" placeholder="Enter path">
+    <button id="btnMakeRequest" onclick="makeHttpRequest()">Make Request</button>
+</div>
+<div id="responseContainer"></div>
+
+<script>
+    function makeHttpRequest() {
+        var pathInput = document.getElementById("inputUrl");
+        var path = pathInput.value.trim();
+
+        // Проверка, что введено значение
+        if (path === "") {
+            alert("Please enter a valid path.");
+            return;
+        }
+
+        var url = "http://localhost:8080/" + path;
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", url, true);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                var response = JSON.parse(xhr.responseText);
+                console.log(response)
+                displayResponse(response);
+            }
+        };
+        xhr.send();
+    }
+
+    function displayResponse(response) {
+        var responseContainer = document.getElementById("responseContainer");
+        responseContainer.innerHTML = '<code>' + JSON.stringify(response, null, 2) + '</code>';
+    }
+</script>
+
+</body>
+</html>

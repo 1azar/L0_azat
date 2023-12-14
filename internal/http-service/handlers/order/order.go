@@ -23,19 +23,22 @@ func New(log *slog.Logger, orderGetter OrdGetter) http.HandlerFunc {
 
 		log := log.With(
 			slog.String("fn", fn),
-			slog.String("reques_id", middleware.GetReqID(r.Context())),
+			slog.String("request_id", middleware.GetReqID(r.Context())),
 		)
 
-		orderUid := chi.URLParam(r, "orderUid")
+		orderUid := chi.URLParam(r, "order_uid")
 		if orderUid == "" {
-			log.Info("no orderUid is provided")
+			log.Info("no order_uid is provided")
 			render.JSON(w, r, resp.Error("invalid request"))
+			return
+		}
+		if orderUid == "favicon" {
 			return
 		}
 
 		resOrder, err := orderGetter.GetOrder(orderUid)
 		if errors.Is(err, storage.ErrOrderNotFound) {
-			log.Info("order not found", "orderUid", orderUid)
+			log.Info("order not found", "order_uid", orderUid)
 			render.JSON(w, r, resp.Error("not found"))
 			return
 		}
