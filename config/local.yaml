@@ -5,3 +5,13 @@ dbCredentials:
   addressEnv: DB_ADDR
   portEnv: DB_PORT
   dbNameEnv: DB_NAME
+natsCfg:
+  clusterIdEnv: STAN_CLUSTER_ID
+  clientIdENv: STAN_CLIENT_ID
+  subjectEnv: STAN_SUBJECT
+serviceCfg:
+  cacheSize: 100
+httpCfg:
+  address: localhost:8080
+  timeout: 5s
+  idleTimeout: 30s

@@ -1,1 +1,8 @@
-docker build -t postgrestrivial:0 .
+docker build -t postgres-trivial:0 .
+
+docker run -p 4222:4222 -p 8222:8222 -p 6222:6222 \
+    -e STAN_CLUSTER_ID = L0-cluster-id \
+    -e STAN_CLIENT_ID = L0-client-id \
+    -e STAN_SUBJECT = L0-subject \
+    nats-streaming -p 4222 -m 8222
+

@@ -32,6 +32,12 @@ CREATE TABLE order_items (
                              FOREIGN KEY (order_uid) REFERENCES orders(order_uid)
 );
 
+-- -- Таблица для кэша
+-- CREATE TABLE cache_replica (
+--     key VARCHAR(255) PRIMARY KEY,
+--     value JSONB
+-- );
+
 -- Тестовое заполнение данными
 INSERT INTO orders (
     order_uid, track_number, entry, delivery_info, payment_info,

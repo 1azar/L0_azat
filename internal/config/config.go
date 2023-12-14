@@ -5,13 +5,33 @@ import (
 	"fmt"
 	"github.com/ilyakaznacheev/cleanenv"
 	"os"
+	"time"
 )
 
 const configEnvName = "CONFIG_PATH"
 
 type Config struct {
-	Env           string        `yaml:"env" env-required:"true"`
-	DbCredentials DbCredentials `yaml:"dbCredentials" env-required:"true"`
+	Env           string               `yaml:"env" env-required:"true"`
+	DbCredentials DbCredentials        `yaml:"dbCredentials" env-required:"true"`
+	NatsCfg       NatsConfiguration    `yaml:"natsCfg" env-required:"true"`
+	ServiceCfg    ServiceConfiguration `yaml:"serviceCfg" env-required:"true"`
+	HttpCfg       HttpConfiguration    `yaml:"httpCfg" env-required:"true"`
+}
+
+type HttpConfiguration struct {
+	Address     string        `yaml:"address" env-default:"localhost:8080"`
+	Timeout     time.Duration `yaml:"timeout" env-default:"4s"`
+	IdleTimeout time.Duration `yaml:"idleTimeout" env-default:"60s"`
+}
+
+type ServiceConfiguration struct {
+	CacheSize int `yaml:"cacheSize" env-required:"true"`
+}
+
+type NatsConfiguration struct {
+	ClusterIdEnv string `yaml:"clusterIdEnv" env-required:"true"`
+	ClientIdENv  string `yaml:"clientIdENv" env-required:"true"`
+	SubjectEnv   string `yaml:"subjectEnv" env-required:"true"`
 }
 
 // DbCredentials store env var names for db credentials.
