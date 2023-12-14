@@ -2,11 +2,14 @@ package tests
 
 import (
 	"L0_azat/internal/domain"
+	"encoding/json"
 	"github.com/brianvoe/gofakeit"
+	"github.com/nats-io/nats.go"
+	"log"
 	"math/rand"
 )
 
-func generateMsg() domain.Message {
+func GenerateMsg() domain.Message {
 	addr := gofakeit.Address()
 
 	itemCount := rand.Intn(9) + 1
@@ -64,4 +67,23 @@ func generateMsg() domain.Message {
 	}
 
 	return testMsg
+}
+
+func SendMsg(url, subject string, msg domain.Message) {
+	nc, err := nats.Connect(url)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer nc.Close()
+
+	jsonMsg, err := json.Marshal(msg)
+
+	if err != nil {
+		log.Fatal("Error encoding JSON:", err)
+	}
+
+	err = nc.Publish(subject, jsonMsg)
+	if err != nil {
+		log.Fatal("Error publishing message:", err)
+	}
 }

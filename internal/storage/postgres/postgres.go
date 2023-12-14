@@ -218,6 +218,7 @@ func (s *Storage) SaveMsg(msg domain.Message) error {
 		q := fmt.Sprintf(`INSERT INTO %s (
 												order_uid,
 												chrt_id,
+												track_number,
 												price,
 												rid,
 												name,
@@ -227,9 +228,10 @@ func (s *Storage) SaveMsg(msg domain.Message) error {
 												nm_id,
 												brand,
 												status
-                ) VALUES ( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`, storage.ORDER_ITEMS_TABLE)
+                ) VALUES ( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`, storage.ORDER_ITEMS_TABLE)
 		_, err = s.conn.Exec(context.Background(), q, msg.OrderUid,
 			item.ChrtId,
+			item.TrackNumber,
 			item.Price,
 			item.Rid,
 			item.Name,

@@ -95,19 +95,13 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second) //todo: move timeout to cfg
 	defer cancel()
 
-	// stop http serving
 	if err := httpServ.Shutdown(ctx); err != nil {
 		logger.Error(err.Error())
 	}
-
-	// stop nats-streaming serving
+	storage.Close()
 	natsServ.Terminate()
 
-	// disconnect DB
-	storage.Close()
-
 	logger.Info("service gracefully stopped")
-
 }
 
 const (

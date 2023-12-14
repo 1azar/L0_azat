@@ -19,7 +19,7 @@ func StartMsgSpam(cfg *config.Config, delay time.Duration) {
 	subject := "L0-subject"
 
 	for {
-		msg := generateMsg()
+		msg := GenerateMsg()
 		//jsonMsg, err := json.Marshal(msg)
 		jsonMsg, err := json.MarshalIndent(msg, "", "\t")
 		if err != nil {
